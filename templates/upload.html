@@ -30,7 +30,11 @@
 <body>
     <div>
         <h1>Image Transformation Result</h1>
-        <form id="upload-form" action="/transform" method="post" enctype="multipart/form-data">
+
+{#        This form submit will triggers the GatedGan transform request,
+please modify accordingly if you want to incorporate other transforms #}
+
+        <form id="upload-form" action="/transformGan" method="post" enctype="multipart/form-data">
             <label for="image">Upload an image:</label>
             <input type="file" name="image" id="image">
             <label for="style-select">Choose a style:</label>

@@ -1,19 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import torch 
-from torch.utils.data import DataLoader
-import torchvision.transforms as transforms
-import torchvision
-from torch.utils.data import Dataset
-from PIL import Image
-from models import *
-from data import *
-import os
+from gatedGan.models import *
+from gatedGan.data import *
 
 # ##### Initialize Generator
 gen = Generator(3, 3, 3, 64)
-gen.load_state_dict(torch.load('./netG1000.pth', map_location='cpu'))
+gen.load_state_dict(torch.load('./gatedGan/netG1000.pth', map_location='cpu'))
 
 # ###### Define Image Transforms
 transforms_ = [
