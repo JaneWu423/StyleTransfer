@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 # route only for gatedGan transform
 @app.route('/stylebankTransform', methods=['POST'])
-def transform():
+def stylebankTransform():
     # Get the uploaded image file
     file = request.files['image']
     style = ast.literal_eval(request.form['style'])
@@ -43,7 +43,7 @@ def transformGated():
 
 
 @app.route('/stylebank', methods=['GET'])
-def upload():
+def stylebank():
     # modify the upload template accordingly if you need to add new transform method
     return render_template('stylebank.html')
 
