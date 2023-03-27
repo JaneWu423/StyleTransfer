@@ -26,13 +26,8 @@ def tensor2image(tensor):
     return image.astype(np.uint8)
 
 
-# ##### Every Slider Update Re-Loads Image with Random Crop
-# ##### Image must be .JPG or .jpeg
-
-
 def generate_image(style, file, flip90=False):
-    image = Image.open(file)
-    # print(type(image))
+    image = Image.open(file).convert("RGB")
     Abstract_Expressionism, Realism, Ukiyo_e, ident = style[0],style[1], style[2], style[3]
     content = transform(image)
     Tensor = torch.Tensor
@@ -50,6 +45,6 @@ def generate_image(style, file, flip90=False):
     else:
         im = im.transpose(1, 2, 0)
     im = Image.fromarray(im)
-    # print(type(image))
+
     return im
 
