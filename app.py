@@ -83,6 +83,7 @@ def randStyle(style):
 
     random_file_name = random.choice(file_names)
     image_path = os.path.join(folder_path, random_file_name)
+
     return image_path
 
 
