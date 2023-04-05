@@ -26,10 +26,36 @@ def tensor2image(tensor):
     return image.astype(np.uint8)
 
 
-def generate_image(style, file, flip90=False):
+def generate_image(style, file, w=-1, h=-1, flip90=False):
     image = Image.open(file).convert("RGB")
     Abstract_Expressionism, Realism, Ukiyo_e, ident = style[0],style[1], style[2], style[3]
     content = transform(image)
+    if w != -1 and h != -1:
+        if w == 0:
+            toResize = transforms.Resize(int(h), transforms.InterpolationMode.BICUBIC)
+            content = toResize(content)
+        elif h == 0:
+            toResize = transforms.Resize(int(w), transforms.InterpolationMode.BICUBIC)
+            content = toResize(content)
+        else:
+            toResize = transforms.Resize([int(w), int(h)], transforms.InterpolationMode.BICUBIC)
+            content = toResize(content)
+
+    max_dimension = 800
+
+    width = content.shape[1]
+    height = content.shape[2]
+    if width > max_dimension or height > max_dimension:
+        if width > height:
+            new_width = max_dimension
+            new_height = int(height * max_dimension / width)
+        else:
+            new_width = int(width * max_dimension / height)
+            new_height = max_dimension
+
+        toResize = transforms.Resize([new_width,new_height], transforms.InterpolationMode.BICUBIC)
+        content = toResize(content)
+
     Tensor = torch.Tensor
     size = content.size()
     input_A = Tensor(1, 3, size[1], size[2])

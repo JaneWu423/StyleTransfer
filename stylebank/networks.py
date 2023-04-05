@@ -7,7 +7,8 @@ import torchvision.models as models
 import stylebank.args as args
 
 device = args.device
-vgg16 = models.vgg16(pretrained=True).features.to(device).eval()
+vgg16 = torch.load('./stylebank/weights/vgg16.pth')
+# vgg16 = models.vgg16(pretrained=True).features.to(device).eval()
 
 class ContentLoss(nn.Module):
 

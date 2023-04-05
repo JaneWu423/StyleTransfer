@@ -33,8 +33,14 @@ def transformGated():
     ab = ast.literal_eval(request.form['style1'])
     uki = ast.literal_eval(request.form['style2'])
     re = ast.literal_eval(request.form['style3'])
+    width = -1
+    height = -1
+    if request.form['resizeWidth']:
+        width = ast.literal_eval(request.form['resizeWidth'])
+    if request.form['resizeHeight']:
+        height = ast.literal_eval(request.form['resizeHeight'])
     style = [ab, uki, re, 1]
-    stylized_image = generate_image(style, file)
+    stylized_image = generate_image(style, file, width, height)
     buffer = io.BytesIO()
     stylized_image.save(buffer, format='PNG')
     base64_image = base64.b64encode(buffer.getvalue()).decode('utf-8')
