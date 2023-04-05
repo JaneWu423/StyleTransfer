@@ -215,11 +215,11 @@ please modify accordingly if you want to incorporate other transforms #}
                     reader1.readAsDataURL(formData.get('content_image'));
 
                     $('#transformed-image-1').attr('src', 'data:image/png;base64,' + data.image_gan);
-                    $('#image-caption-1').text("Generation Time: " + data.text_gan + "s");
+                    $('#image-caption-1').text("Generation Time for Gated GAN: " + data.text_gan + "s");
                     $('#transformed-image-2').attr('src', 'data:image/png;base64,' + data.image_bank);
-                    $('#image-caption-2').text("Generation Time: " + data.text_bank + "s");
+                    $('#image-caption-2').text("Generation Time for Style Bank: " + data.text_bank + "s");
                     $('#transformed-image-3').attr('src', 'data:image/png;base64,' + data.image_mix);
-                    $('#image-caption-3').text("Generation Time: " + data.text_mix + "s");
+                    $('#image-caption-3').text("Generation Time for Style Mixer: " + data.text_mix + "s");
                 }
             });
         });

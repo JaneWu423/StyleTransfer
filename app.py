@@ -5,6 +5,8 @@ from styleMixer.generate_image import generate_image_styleMixer
 import io
 import base64
 import ast
+import os
+import random
 
 app = Flask(__name__)
 
@@ -64,6 +66,25 @@ def transform_styleMixer():
     # Return the base64-encoded string as a JSON response
     return jsonify({'image': base64_image, 'text': str(round(gen_time, 3))})
 
+def randStyle(style):
+    folder_path = ""
+    file_names = ""
+    if style == 0:
+        folder_path = "./styleImg/ae"
+        file_names = os.listdir(folder_path)
+
+    elif style == 1:
+        folder_path = "./styleImg/re"
+        file_names = os.listdir(folder_path)
+
+    else:
+        folder_path = "./styleImg/uki"
+        file_names = os.listdir(folder_path)
+
+    random_file_name = random.choice(file_names)
+    image_path = os.path.join(folder_path, random_file_name)
+    return image_path
+
 
 @app.route('/transformAll', methods=['POST'])
 def transform_all():
@@ -74,7 +95,7 @@ def transform_all():
     if request.files['style_image']:
         style_file = request.files['style_image']
     else:
-        style_file = request.files['content_image']
+        style_file = randStyle(style)
 
     style_gan = [0, 0, 0, 1]
     if style == 0:
