@@ -181,15 +181,15 @@
 <script>
     $(document).ready(function () {
         const resizeCheckbox = document.getElementById('resizeCheckbox');
-const resizeInputContainer = document.getElementById('resizeInputContainer');
+        const resizeInputContainer = document.getElementById('resizeInputContainer');
 
-resizeCheckbox.addEventListener('change', function() {
-  if (resizeCheckbox.checked) {
-    resizeInputContainer.style.display = 'block';
-  } else {
-    resizeInputContainer.style.display = 'none';
-  }
-});
+        resizeCheckbox.addEventListener('change', function () {
+            if (resizeCheckbox.checked) {
+                resizeInputContainer.style.display = 'block';
+            } else {
+                resizeInputContainer.style.display = 'none';
+            }
+        });
         // Handle form submission with AJAX
         $('#upload-form').submit(function (event) {
             event.preventDefault();  // Prevent default form submission

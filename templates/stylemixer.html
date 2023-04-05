@@ -119,6 +119,12 @@ nav {
             height: auto;
             margin-top: 20px;
         }
+        figcaption {
+          font-style: italic;
+          font-size: 12px;
+          text-align: center;
+          margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -148,6 +154,7 @@ please modify accordingly if you want to incorporate other transforms #}
         <img id="uploaded-style" alt="Style Image">
         <img id="uploaded-content" alt="Content Image">
         <img id="transformed-image" alt="Transformed Image">
+        <figcaption id="image-caption"></figcaption>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -176,6 +183,7 @@ please modify accordingly if you want to incorporate other transforms #}
                         reader1.readAsDataURL(formData.get('content_image'));
 
                         $('#transformed-image').attr('src', 'data:image/png;base64,' + data.image);
+                        $('#image-caption').text("Generation Time: "+data.text+"s");
                     }
                 });
             });

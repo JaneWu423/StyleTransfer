@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Image Style Transfer: Painting 2 Painting</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Style Transfer</title>
+    <style>
+        /* define a grid layout */
+        body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 20px;
+            align-items: center;
+            justify-items:start;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            margin-top: 60px;
+        }
+nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f5f5f5;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 98%;
+            z-index: 1;
+        }
+
+        nav h2 {
+            margin: 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0062cc;
+        }
+
+
+    </style>
+  </head>
+  <body>
+    <nav>
+        <h2>Image Style Transfer: Style Mixer</h2>
+    </nav>
+    <section>
+      <h2>GatedGAN</h2>
+      <p>A generative adversarial network that can apply pretrained styles to a given content image. The gating function controls how much each style is applied to the content.</p>
+      <button onclick="location.href='/gated';">Try GatedGAN</button>
+    </section>
+    <section>
+      <h2>Style Bank</h2>
+      <p>In Style Bank, a neural network is trained to learn a set of "style filters" that capture the statistical properties of different styles. Each style filter is a set of convolutional filters that can be applied to an input image to extract features that match the style of a particular reference image.</p>
+      <button onclick="location.href='/stylebank';">Try Style Bank</button>
+    </section>
+    <section>
+      <h2>Style Mixer</h2>
+      <p>A neural network architecture called the Semantic-aware Multi-Style Transfer Network (SMTNet), which combines the strengths of existing style transfer methods to create a more powerful and flexible model.</p>
+      <button onclick="location.href='/stylemixer';">Try Style Mixer</button>
+    </section>
+    <section>
+      <h2>Try Everything</h2>
+      <p>Input a single image and try it with all the three models.</p>
+      <button onclick="location.href='/tryall';">Try Everything</button>
+    </section>
+  </body>
+</html>

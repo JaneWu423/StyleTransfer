@@ -14,7 +14,8 @@
             font-family: Arial, sans-serif;
             margin-top: 60px;
         }
-nav {
+
+        nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -120,45 +121,76 @@ nav {
             height: auto;
             margin-top: 20px;
         }
+
         figcaption {
-          font-style: italic;
-          font-size: 12px;
-          text-align: center;
-          margin-top: 5px;
+            font-style: italic;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
 <nav>
 
-        <h2>Image Style Transfer: Style Bank</h2>
+    <h2>Image Style Transfer: Try All</h2>
 
     <div>
         <a href="/gated" style="text-decoration: none;">Gated Gan</a>
+        <a href="/stylebank" style="text-decoration: none;">Style Bank</a>
         <a href="/stylemixer" style="text-decoration: none;">Style Mixer</a>
     </div>
 </nav>
 
-<form id="upload-form" action="/stylebankTransform" method="post" enctype="multipart/form-data">
-    <label for="image">Upload an image:</label>
-    <input type="file" name="image" id="image">
-    <label for="style-select">Choose a style:</label>
-    <select name="style" id="style-select">
-        <option value="0">Abstract</option>
-        <option value="1">Realism</option>
-        <option value="2">Ukiyo_e</option>
-    </select>
-    <button type="submit">Transform Image</button>
-</form>
+<div>
+    {#        This form submit will triggers the stylemixer transform request,
+please modify accordingly if you want to incorporate other transforms #}
+
+    <form id="upload-form" action="/transformAll" method="post" enctype="multipart/form-data">
+        <div>
+            <input type="checkbox" id="styleCheckbox">
+            <label for="styleCheckbox">Style Reference Image</label>
+        </div>
+        <div id="styleInputContainer" style="display:none">
+            <label for="style_image">Upload a style image:</label>
+            <input type="file" name="style_image" id="style_image">
+        </div>
+
+        <label for="content_image">Upload a content image:</label>
+        <input type="file" name="content_image" id="content_image">
+
+        <label for="style-select">Choose a style:</label>
+        <select name="style" id="style-select">
+            <option value="0">Abstract</option>
+            <option value="1">Realism</option>
+            <option value="2">Ukiyo_e</option>
+        </select>
+        <button type="submit">Transform Image</button>
+    </form>
 </div>
 <div>
-    <img id="uploaded-image" alt="Uploaded Image">
-    <img id="transformed-image" alt="Transformed Image">
-    <figcaption id="image-caption"></figcaption>
+    {#        <img id="uploaded-style" alt="Style Image">#}
+    <img id="uploaded-content" alt="Content Image">
+    <img id="transformed-image-1" alt="Transformed Image">
+    <figcaption id="image-caption-1"></figcaption>
+    <img id="transformed-image-2" alt="Transformed Image">
+    <figcaption id="image-caption-2"></figcaption>
+    <img id="transformed-image-3" alt="Transformed Image">
+    <figcaption id="image-caption-3"></figcaption>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
+        const styleCheckbox = document.getElementById('styleCheckbox');
+        const styleInputContainer = document.getElementById('styleInputContainer');
+
+        styleCheckbox.addEventListener('change', function () {
+            if (styleCheckbox.checked) {
+                styleInputContainer.style.display = 'block';
+            } else {
+                styleInputContainer.style.display = 'none';
+            }
+        });
         // Handle form submission with AJAX
         $('#upload-form').submit(function (event) {
             event.preventDefault();  // Prevent default form submission
@@ -170,14 +202,24 @@ nav {
                 processData: false,
                 contentType: false,
                 success: function (data) {
-                    var reader = new FileReader();
-                    reader.onload = function (event) {
-                        $('#uploaded-image').attr('src', event.target.result);
-                    };
-                    reader.readAsDataURL(formData.get('image'));
+                    {#var reader = new FileReader();#}
+                    {#reader.onload = function(event) {#}
+                    {#    $('#uploaded-style').attr('src', event.target.result);#}
 
-                    $('#transformed-image').attr('src', 'data:image/png;base64,' + data.image);
-                    $('#image-caption').text("Generation Time: "+data.text+"s");
+                    {#reader.readAsDataURL(formData.get('style_image'));#}
+
+                    var reader1 = new FileReader();
+                    reader1.onload = function (event) {
+                        $('#uploaded-content').attr('src', event.target.result);
+                    };
+                    reader1.readAsDataURL(formData.get('content_image'));
+
+                    $('#transformed-image-1').attr('src', 'data:image/png;base64,' + data.image_gan);
+                    $('#image-caption-1').text("Generation Time: " + data.text_gan + "s");
+                    $('#transformed-image-2').attr('src', 'data:image/png;base64,' + data.image_bank);
+                    $('#image-caption-2').text("Generation Time: " + data.text_bank + "s");
+                    $('#transformed-image-3').attr('src', 'data:image/png;base64,' + data.image_mix);
+                    $('#image-caption-3').text("Generation Time: " + data.text_mix + "s");
                 }
             });
         });

@@ -27,6 +27,7 @@ for i in range(NUM_STYLE):
     model.style_bank[i].load_state_dict(torch.load(args.BANK_WEIGHT_PATH.format(i),map_location=args.device))
 
 def transformImage(file, style):
+    start = time.time()
     image = Image.open(file).convert("RGB")
 
     toTensor = transforms.ToTensor()
@@ -40,7 +41,8 @@ def transformImage(file, style):
     output = to_pil_image(output)
     # output.show()
 
-    return output
+    end = time.time() - start
+    return output, end
 
 # if __name__ == "__main__":
 #     transformImage("../testHorse.jpg", 2)

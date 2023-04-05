@@ -1,5 +1,6 @@
 import argparse
 import os
+import time
 import torch
 import torch.nn as nn
 from PIL import Image
@@ -15,9 +16,6 @@ from styleMixer.function import coral
 import numpy as np
 import torchvision.transforms as transforms
 
-# transform = transforms.Compose([
-#     transforms.ToTensor()
-# ])
 
 def test_transform():
     transform_list = []
@@ -35,7 +33,7 @@ def tensor2image(tensor):
     return image.astype(np.uint8)
 
 def generate_image_styleMixer(style_file, content_file):
-
+    start = time.time()
     name = "styleMixer_bw1_style3.00_cont3.00_iden1.00_cx3.00_1"
     bandwidth = 1
     iter = 8
@@ -85,4 +83,4 @@ def generate_image_styleMixer(style_file, content_file):
     ndarr = grid.mul(255).add_(0.5).clamp_(0, 255).permute(1, 2, 0).to("cpu", torch.uint8).numpy()
     im = Image.fromarray(ndarr)
 
-    return im
+    return im, time.time() - start

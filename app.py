@@ -16,14 +16,14 @@ def stylebankTransform():
     file = request.files['image']
     style = ast.literal_eval(request.form['style'])
 
-    stylized_image = transformImage(file, style)
+    stylized_image, gen_time = transformImage(file, style)
 
     buffer = io.BytesIO()
     stylized_image.save(buffer, format='PNG')
     base64_image = base64.b64encode(buffer.getvalue()).decode('utf-8')
 
     # Return the base64-encoded string as a JSON response
-    return jsonify({'image': base64_image})
+    return jsonify({'image': base64_image, 'text': str(round(gen_time, 3))})
 
 
 @app.route('/transformGated', methods=['POST'])
@@ -46,7 +46,7 @@ def transformGated():
     base64_image = base64.b64encode(buffer.getvalue()).decode('utf-8')
 
     # Return the base64-encoded string as a JSON response
-    return jsonify({'image': base64_image, 'text': str(round(gen_time,3))})
+    return jsonify({'image': base64_image, 'text': str(round(gen_time, 3))})
 
 
 # route only for styleMixer transform
@@ -56,13 +56,53 @@ def transform_styleMixer():
     style_file = request.files['style_image']
     content_file = request.files['content_image']
 
-    stylized_image = generate_image_styleMixer(style_file, content_file)
+    stylized_image, gen_time = generate_image_styleMixer(style_file, content_file)
     buffer = io.BytesIO()
     stylized_image.save(buffer, format='PNG')
     base64_image = base64.b64encode(buffer.getvalue()).decode('utf-8')
 
     # Return the base64-encoded string as a JSON response
-    return jsonify({'image': base64_image})
+    return jsonify({'image': base64_image, 'text': str(round(gen_time, 3))})
+
+
+@app.route('/transformAll', methods=['POST'])
+def transform_all():
+    style_file = None
+    # Get the uploaded image file
+    content_file = request.files['content_image']
+    style = ast.literal_eval(request.form['style'])
+    if request.files['style_image']:
+        style_file = request.files['style_image']
+    else:
+        style_file = request.files['content_image']
+
+    style_gan = [0, 0, 0, 1]
+    if style == 0:
+        style_gan = [1, 0, 0, 1]
+    elif style == 1:
+        style_gan = [0, 1, 0, 1]
+    elif style == 2:
+        style_gan = [0, 0, 1, 1]
+
+    stylized_image_gan, gen_time_gan = generate_image(style_gan, content_file, -1, -1)
+    stylized_image_bank, gen_time_bank = transformImage(content_file, style)
+
+    stylized_image_mix, gen_time_mix = generate_image_styleMixer(style_file, content_file)
+    buffer_gan = io.BytesIO()
+    stylized_image_gan.save(buffer_gan, format='PNG')
+    base64_image_gan = base64.b64encode(buffer_gan.getvalue()).decode('utf-8')
+
+    buffer_bank = io.BytesIO()
+    stylized_image_bank.save(buffer_bank, format='PNG')
+    base64_image_bank = base64.b64encode(buffer_bank.getvalue()).decode('utf-8')
+
+    buffer_mix = io.BytesIO()
+    stylized_image_mix.save(buffer_mix, format='PNG')
+    base64_image_mix = base64.b64encode(buffer_mix.getvalue()).decode('utf-8')
+    # Return the base64-encoded string as a JSON response
+    return jsonify({'image_gan': base64_image_gan, 'image_bank': base64_image_bank, 'image_mix': base64_image_mix,
+                    'text_gan': str(round(gen_time_gan, 3)), 'text_bank': str(round(gen_time_bank, 3)),
+                    'text_mix': str(round(gen_time_mix, 3))})
 
 
 @app.route('/stylebank', methods=['GET'])
@@ -76,10 +116,21 @@ def gatedGan():
     # modify the upload template accordingly if you need to add new transform method
     return render_template('gatedGan.html')
 
+
 @app.route('/stylemixer', methods=['GET'])
 def stylemixer():
     # modify the upload template accordingly if you need to add new transform method
     return render_template('stylemixer.html')
+
+
+@app.route('/', methods=['GET'])
+def index():
+    return render_template('index.html')
+
+
+@app.route('/tryall', methods=['GET'])
+def tryall():
+    return render_template('tryall.html')
 
 
 if __name__ == '__main__':
