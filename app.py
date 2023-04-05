@@ -40,13 +40,13 @@ def transformGated():
     if request.form['resizeHeight']:
         height = ast.literal_eval(request.form['resizeHeight'])
     style = [ab, uki, re, 1]
-    stylized_image = generate_image(style, file, width, height)
+    stylized_image, gen_time = generate_image(style, file, width, height)
     buffer = io.BytesIO()
     stylized_image.save(buffer, format='PNG')
     base64_image = base64.b64encode(buffer.getvalue()).decode('utf-8')
 
     # Return the base64-encoded string as a JSON response
-    return jsonify({'image': base64_image})
+    return jsonify({'image': base64_image, 'text': str(round(gen_time,3))})
 
 
 # route only for styleMixer transform

@@ -3,6 +3,7 @@
 
 from gatedGan.models import *
 from gatedGan.data import *
+import time
 
 # ##### Initialize Generator
 gen = Generator(3, 3, 3, 64)
@@ -27,6 +28,7 @@ def tensor2image(tensor):
 
 
 def generate_image(style, file, w=-1, h=-1, flip90=False):
+    start = time.time()
     image = Image.open(file).convert("RGB")
     Abstract_Expressionism, Realism, Ukiyo_e, ident = style[0],style[1], style[2], style[3]
     content = transform(image)
@@ -42,6 +44,7 @@ def generate_image(style, file, w=-1, h=-1, flip90=False):
             content = toResize(content)
 
     max_dimension = 800
+    # avg = 5 s; max_dim = 900 --> avg=8
 
     width = content.shape[1]
     height = content.shape[2]
@@ -72,5 +75,7 @@ def generate_image(style, file, w=-1, h=-1, flip90=False):
         im = im.transpose(1, 2, 0)
     im = Image.fromarray(im)
 
-    return im
+    end = time.time() - start
+
+    return im, end
 
