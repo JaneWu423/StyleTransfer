@@ -64,10 +64,14 @@
 
         #result {
             display: flex;
-            justify-content: space-between;
-            margin: 10px;
+            justify-content:space-between;
+            margin: 20px;
             align-items: center;
             flex-direction: column;
+        }
+
+        #result img {
+            display: none;
         }
 
         form {
@@ -140,15 +144,38 @@
 
         img {
             max-width: 100%;
-            height: auto;
-            margin-top: 20px;
+            {#max-height:100%;#}
+            object-fit: contain;
+            {#height:auto;#}
+            {#margin-top: 20px;#}
+
         }
 
         figcaption {
             font-style: italic;
             font-size: 12px;
             text-align: center;
-            margin-top: 5px;
+            {#margin-top: 5px;#}
+        }
+
+        .loader {
+            display: none;
+            margin-top: 10px;
+            border: 16px solid #f3f3f3; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
@@ -190,16 +217,19 @@
         </form>
     </div>
     <div id="results">
-        <div id="result"><img id="uploaded-content" alt="Content Image">
+        <div class="loader">
+            <!-- loading icon image goes here -->
+        </div>
+        <div id="result"><img id="uploaded-content" alt="Content Image" class="samesize">
             <figcaption id="image-caption"></figcaption>
         </div>
-        <div id="result"><img id="transformed-image-1" alt="Transformed Image">
+        <div id="result"><img id="transformed-image-1" alt="Transformed Image" class="samesize">
             <figcaption id="image-caption-1"></figcaption>
         </div>
-        <div id="result"><img id="transformed-image-2" alt="Transformed Image">
+        <div id="result"><img id="transformed-image-2" alt="Transformed Image" class="samesize">
             <figcaption id="image-caption-2"></figcaption>
         </div>
-        <div id="result"><img id="transformed-image-3" alt="Transformed Image">
+        <div id="result"><img id="transformed-image-3" alt="Transformed Image" class="samesize">
             <figcaption id="image-caption-3"></figcaption>
         </div>
     </div>
@@ -220,6 +250,15 @@
         // Handle form submission with AJAX
         $('#upload-form').submit(function (event) {
             event.preventDefault();  // Prevent default form submission
+            document.getElementById('uploaded-content').style.display = 'none';
+                    document.getElementById('transformed-image-1').style.display = 'none';
+                    document.getElementById('transformed-image-2').style.display = 'none';
+                    document.getElementById('transformed-image-3').style.display = 'none';
+                    document.getElementById('image-caption-1').style.display = 'none';
+                    document.getElementById('image-caption-2').style.display = 'none';
+                    document.getElementById('image-caption-3').style.display = 'none';
+                    document.getElementById('image-caption').style.display = 'none';
+            document.querySelector('.loader').style.display = "block";
             var formData = new FormData(this);
             $.ajax({
                 url: $(this).attr('action'),
@@ -228,11 +267,7 @@
                 processData: false,
                 contentType: false,
                 success: function (data) {
-                    {#var reader = new FileReader();#}
-                    {#reader.onload = function(event) {#}
-                    {#    $('#uploaded-style').attr('src', event.target.result);#}
 
-                    {#reader.readAsDataURL(formData.get('style_image'));#}
 
                     var reader1 = new FileReader();
                     reader1.onload = function (event) {
@@ -241,12 +276,69 @@
                     reader1.readAsDataURL(formData.get('content_image'));
                     $('#image-caption').text("Content Image");
 
+                    // create promises for each image
+                    var promise = new Promise(function (resolve, reject) {
+                        $('#uploaded-content').on('load', function () {
+                            resolve();
+                        });
+                    });
+                    var promise1 = new Promise(function (resolve, reject) {
+                        $('#transformed-image-1').on('load', function () {
+                            resolve();
+                        });
+                    });
+
+                    var promise2 = new Promise(function (resolve, reject) {
+                        $('#transformed-image-2').on('load', function () {
+                            resolve();
+                        });
+                    });
+
+                    var promise3 = new Promise(function (resolve, reject) {
+                        $('#transformed-image-3').on('load', function () {
+                            resolve();
+                        });
+                    });
+
+
+                    Promise.all([promise, promise1, promise2, promise3]).then(function () {
+                        var images = document.getElementsByClassName('samesize');
+                        var minWidth = 800;
+                        var aspectR = 1;
+
+                        for (var i = 0; i < images.length; i++) {
+                            var width = images[i].naturalWidth;
+                            var height = images[i].naturalHeight;
+                            aspectR = width / height;
+                            if (width < minWidth) {
+                                minWidth = width;
+                            }
+                        }
+                        var uniHeight = Math.floor(minWidth / aspectR);
+                        for (var i = 0; i < images.length; i++) {
+                            images[i].style.width = minWidth + 'px';
+                            images[i].style.height = uniHeight + 'px';
+                        }
+
+                    });
+
+
                     $('#transformed-image-1').attr('src', 'data:image/png;base64,' + data.image_gan);
                     $('#image-caption-1').text("Generation Time for Gated GAN: " + data.text_gan + "s");
                     $('#transformed-image-2').attr('src', 'data:image/png;base64,' + data.image_bank);
                     $('#image-caption-2').text("Generation Time for Style Bank: " + data.text_bank + "s");
                     $('#transformed-image-3').attr('src', 'data:image/png;base64,' + data.image_mix);
                     $('#image-caption-3').text("Generation Time for Style Mixer: " + data.text_mix + "s");
+                    document.getElementById('uploaded-content').style.display = 'block';
+                    document.getElementById('transformed-image-1').style.display = 'block';
+                    document.getElementById('transformed-image-2').style.display = 'block';
+                    document.getElementById('transformed-image-3').style.display = 'block';
+                    document.getElementById('image-caption-1').style.display = 'block';
+                    document.getElementById('image-caption-2').style.display = 'block';
+                    document.getElementById('image-caption-3').style.display = 'block';
+                    document.getElementById('image-caption').style.display = 'block';
+                    document.querySelector('.loader').style.display = "none";
+
                 }
             });
         });

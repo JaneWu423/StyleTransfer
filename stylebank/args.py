@@ -30,7 +30,32 @@ DECODER_WEIGHT_PATH = os.path.join(MODEL_WEIGHT_DIR, 'decoder.pth')
 GLOBAL_STEP_PATH = os.path.join(MODEL_WEIGHT_DIR, 'global_step.log')
 
 NEW_BANK_WEIGHT_DIR = os.path.join(MODEL_WEIGHT_DIR, 'new_bank_2_23')
+
+
 NEW_BANK_WEIGHT_PATH = os.path.join(NEW_BANK_WEIGHT_DIR, '{}.pth')
+
+
+
+BANK_WEIGHT_DIR_A = os.path.join(MODEL_WEIGHT_DIR, 'new_bank_ae_20')
+BANK_WEIGHT_PATH_A = os.path.join(BANK_WEIGHT_DIR_A, '{}.pth')
+
+NEW_BANK_WEIGHT_DIR_A = os.path.join(MODEL_WEIGHT_DIR, 'new_bank_ae_20')
+NEW_BANK_WEIGHT_PATH_A = os.path.join(NEW_BANK_WEIGHT_DIR_A, '{}.pth')
+
+
+BANK_WEIGHT_DIR_R = os.path.join(MODEL_WEIGHT_DIR, 'new_bank_real_20')
+BANK_WEIGHT_PATH_R = os.path.join(BANK_WEIGHT_DIR_R, '{}.pth')
+
+NEW_BANK_WEIGHT_DIR_R = os.path.join(MODEL_WEIGHT_DIR, 'new_bank_real_20')
+NEW_BANK_WEIGHT_PATH_R = os.path.join(NEW_BANK_WEIGHT_DIR_R, '{}.pth')
+
+
+BANK_WEIGHT_DIR_U = os.path.join(MODEL_WEIGHT_DIR, 'new_bank_uki_20')
+BANK_WEIGHT_PATH_U = os.path.join(BANK_WEIGHT_DIR_U, '{}.pth')
+
+NEW_BANK_WEIGHT_DIR_U = os.path.join(MODEL_WEIGHT_DIR, 'new_bank_uki_20')
+NEW_BANK_WEIGHT_PATH_U = os.path.join(NEW_BANK_WEIGHT_DIR_U, '{}.pth')
+
 
 K = 1000
 MAX_ITERATION = 300 * K

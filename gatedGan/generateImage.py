@@ -48,16 +48,22 @@ def generate_image(style, file, w=-1, h=-1, flip90=False):
 
     width = content.shape[1]
     height = content.shape[2]
+    new_width = width
+    new_height = height
     if width > max_dimension or height > max_dimension:
         if width > height:
             new_width = max_dimension
             new_height = int(height * max_dimension / width)
+
         else:
             new_width = int(width * max_dimension / height)
             new_height = max_dimension
 
+
         toResize = transforms.Resize([new_width,new_height], transforms.InterpolationMode.BICUBIC)
         content = toResize(content)
+
+    orig = image.resize([new_height,new_width])
 
     Tensor = torch.Tensor
     size = content.size()
@@ -75,7 +81,8 @@ def generate_image(style, file, w=-1, h=-1, flip90=False):
         im = im.transpose(1, 2, 0)
     im = Image.fromarray(im)
 
+
     end = time.time() - start
 
-    return im, end
+    return im, end, orig
 

@@ -60,14 +60,47 @@ def generate_image_styleMixer(style_file, content_file):
     content_tf = test_transform()
     style_tf = test_transform()
 
+    max_dimension = 800
+    # avg = 5 s; max_dim = 900 --> avg=8
+
 
     styles = style_tf(Image.open(style_file).convert('RGB'))
+    width = styles.shape[1]
+    height = styles.shape[2]
+    if width > max_dimension or height > max_dimension:
+        if width > height:
+            new_width = max_dimension
+            new_height = int(height * max_dimension / width)
+        else:
+            new_width = int(width * max_dimension / height)
+            new_height = max_dimension
+
+        toResize = transforms.Resize([new_width, new_height], transforms.InterpolationMode.BICUBIC)
+        styles = toResize(styles)
+
+
     #styles = [style.unsqueeze(0) for style in styles]
     styles = styles.to(device).unsqueeze(0)
     styles = styles.to(device).unsqueeze(0)
     #print("styles", styles[0].size())
 
     content = content_tf(Image.open(content_file).convert('RGB'))
+
+    width = content.shape[1]
+    height = content.shape[2]
+    if width > max_dimension or height > max_dimension:
+        if width > height:
+            new_width = max_dimension
+            new_height = int(height * max_dimension / width)
+        else:
+            new_width = int(width * max_dimension / height)
+            new_height = max_dimension
+
+        toResize = transforms.Resize([new_width, new_height], transforms.InterpolationMode.BICUBIC)
+        content = toResize(content)
+
+    print(styles.shape, content.shape)
+
     #print("content", content.size())
     content = content.to(device).unsqueeze(0)       
 

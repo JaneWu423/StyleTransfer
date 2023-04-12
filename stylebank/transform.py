@@ -2,6 +2,7 @@ import time
 import os
 
 import torch
+import random
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
@@ -13,18 +14,17 @@ import stylebank.args as args
 from PIL import Image
 from stylebank.networks import LossNetwork, StyleBankNet
 
-NUM_STYLE = 3
+numStyle = 60
 
+model = StyleBankNet(numStyle).to(args.device)
+model.encoder_net.load_state_dict(torch.load(args.ENCODER_WEIGHT_PATH, map_location=args.device))
+model.decoder_net.load_state_dict(torch.load(args.DECODER_WEIGHT_PATH, map_location=args.device))
+state_dict = torch.load(args.MODEL_WEIGHT_PATH, map_location=args.device)
 
-
-model = StyleBankNet(NUM_STYLE).to(args.device)
-
-model.encoder_net.load_state_dict(torch.load(args.ENCODER_WEIGHT_PATH,map_location= args.device))
-model.decoder_net.load_state_dict(torch.load(args.DECODER_WEIGHT_PATH,map_location=args.device))
-state_dict = torch.load(args.MODEL_WEIGHT_PATH,map_location=args.device)
-# model.load_state_dict(torch.load(args.MODEL_WEIGHT_PATH,map_location=args.device))
-for i in range(NUM_STYLE):
-    model.style_bank[i].load_state_dict(torch.load(args.BANK_WEIGHT_PATH.format(i),map_location=args.device))
+for i in range(int(numStyle/3)):
+    model.style_bank[i * 3].load_state_dict(torch.load(args.BANK_WEIGHT_PATH_A.format(i), map_location=args.device))
+    model.style_bank[i * 3 + 1].load_state_dict(torch.load(args.BANK_WEIGHT_PATH_R.format(i), map_location=args.device))
+    model.style_bank[i * 3 + 2].load_state_dict(torch.load(args.BANK_WEIGHT_PATH_U.format(i), map_location=args.device))
 
 def transformImage(file, style):
     start = time.time()
@@ -32,6 +32,9 @@ def transformImage(file, style):
 
     toTensor = transforms.ToTensor()
     tensor_image = toTensor(image).unsqueeze(0)
+
+    randNum = random.randint(0, 19)
+    style = 3 * randNum + style
     output_image = model(tensor_image, [style])
 
 

@@ -14,7 +14,8 @@
             font-family: Arial, sans-serif;
             margin-top: 60px;
         }
-nav {
+
+        nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -120,18 +121,46 @@ nav {
             height: auto;
             margin-top: 20px;
         }
+
+        #uploaded-image, #transformed-image {
+            display: none
+        }
+
         figcaption {
-          font-style: italic;
-          font-size: 12px;
-          text-align: center;
-          margin-top: 5px;
+            font-style: italic;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        #uploaded-image, #transformed-image {
+            display: none;
+        }
+
+        .loader {
+            display: none;
+            border: 16px solid #f3f3f3; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
 <body>
 <nav>
 
-        <h2>Image Style Transfer: Style Bank</h2>
+    <h2>Image Style Transfer: Style Bank</h2>
 
     <div>
         <a href="/gated" style="text-decoration: none;">Gated Gan</a>
@@ -151,8 +180,11 @@ nav {
     </select>
     <button type="submit">Transform Image</button>
 </form>
-</div>
+
 <div>
+    <div class="loader">
+        <!-- loading icon image goes here -->
+    </div>
     <img id="uploaded-image" alt="Uploaded Image">
     <img id="transformed-image" alt="Transformed Image">
     <figcaption id="image-caption"></figcaption>
@@ -162,7 +194,11 @@ nav {
     $(document).ready(function () {
         // Handle form submission with AJAX
         $('#upload-form').submit(function (event) {
+            document.querySelector('.loader').style.display = "block";
             event.preventDefault();  // Prevent default form submission
+            $('#transformed-image').css('display', 'none');
+            $('#image-caption').css('display', 'none');
+            $('#uploaded-image').css('display', 'none');
             var formData = new FormData(this);
             $.ajax({
                 url: $(this).attr('action'),
@@ -174,11 +210,15 @@ nav {
                     var reader = new FileReader();
                     reader.onload = function (event) {
                         $('#uploaded-image').attr('src', event.target.result);
+                        $('#uploaded-image').css('display', 'block');
                     };
                     reader.readAsDataURL(formData.get('image'));
 
                     $('#transformed-image').attr('src', 'data:image/png;base64,' + data.image);
-                    $('#image-caption').text("Generation Time: "+data.text+"s");
+                    $('#transformed-image').css('display', 'block');
+                    $('#image-caption').text("Generation Time: " + data.text + "s");
+                    $('#image-caption').css('display', 'block');
+                    document.querySelector('.loader').style.display = "none";
                 }
             });
         });
