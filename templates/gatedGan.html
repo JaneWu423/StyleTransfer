@@ -32,7 +32,7 @@
             margin: 0;
         }
 
-        nav a {
+        #navBut a {
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
@@ -44,7 +44,7 @@
             cursor: pointer;
         }
 
-        nav a:hover {
+        #navBut a:hover {
             background-color: #0062cc;
         }
 
@@ -182,10 +182,8 @@
 </head>
 <body>
 <nav>
-    <h2>Image Style Transfer: Gated GAN</h2>
-
-    <div>
-        <a href="/stylebank" style="text-decoration: none;">Style Bank</a>
+    <h2><a href="/" style="text-decoration:none;color: black;">Image Style Transfer: Gated GAN</a></h2>
+    <div id="navBut">
         <a href="/stylemixer" style="text-decoration: none;">Style Mixer</a>
         <a href="/tryall" style="text-decoration: none;">Try All</a>
     </div>
@@ -281,13 +279,13 @@
                 processData: false,
                 contentType: false,
                 success: function (data) {
-                    {#var reader = new FileReader();#}
-                    {#reader.onload = function (event) {#}
-                    {#    $('#uploaded-image').attr('src', event.target.result);#}
-                    {#    $('#uploaded-image').css('display', 'block');#}
-                        {#document.getElementById("uploaded-image").style.display = "block";#}
+                    // {#var reader = new FileReader();#}
+                    // {#reader.onload = function (event) {#}
+                    // {#    $('#uploaded-image').attr('src', event.target.result);#}
+                    // {#    $('#uploaded-image').css('display', 'block');#}
+                    //     {#document.getElementById("uploaded-image").style.display = "block";#}
 
-                    {#reader.readAsDataURL(formData.get('image'));#}
+                    // {#reader.readAsDataURL(formData.get('image'));#}
 
                     $('#uploaded-image').attr('src', 'data:image/png;base64,' + data.orig);
                     $('#uploaded-image').css('display', 'block');

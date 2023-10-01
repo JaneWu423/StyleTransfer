@@ -1,6 +1,5 @@
 from flask import jsonify, Flask, request, render_template
 from gatedGan.generateImage import generate_image
-from stylebank.transform import transformImage
 from styleMixer.generate_image import generate_image_styleMixer
 import io
 import base64
@@ -9,24 +8,6 @@ import os
 import random
 
 app = Flask(__name__)
-
-
-# route only for gatedGan transform
-@app.route('/stylebankTransform', methods=['POST'])
-def stylebankTransform():
-    # Get the uploaded image file
-    file = request.files['image']
-    style = ast.literal_eval(request.form['style'])
-
-    stylized_image, gen_time = transformImage(file, style)
-
-    buffer = io.BytesIO()
-    stylized_image.save(buffer, format='PNG')
-    base64_image = base64.b64encode(buffer.getvalue()).decode('utf-8')
-
-    # Return the base64-encoded string as a JSON response
-    return jsonify({'image': base64_image, 'text': str(round(gen_time, 3))})
-
 
 @app.route('/transformGated', methods=['POST'])
 def transformGated():
@@ -111,30 +92,19 @@ def transform_all():
         style_gan = [0, 0, 1, 1]
 
     stylized_image_gan, gen_time_gan, _ = generate_image(style_gan, content_file, -1, -1)
-    stylized_image_bank, gen_time_bank = transformImage(content_file, style)
 
     stylized_image_mix, gen_time_mix = generate_image_styleMixer(style_file, content_file)
     buffer_gan = io.BytesIO()
     stylized_image_gan.save(buffer_gan, format='PNG')
     base64_image_gan = base64.b64encode(buffer_gan.getvalue()).decode('utf-8')
 
-    buffer_bank = io.BytesIO()
-    stylized_image_bank.save(buffer_bank, format='PNG')
-    base64_image_bank = base64.b64encode(buffer_bank.getvalue()).decode('utf-8')
-
     buffer_mix = io.BytesIO()
     stylized_image_mix.save(buffer_mix, format='PNG')
     base64_image_mix = base64.b64encode(buffer_mix.getvalue()).decode('utf-8')
     # Return the base64-encoded string as a JSON response
-    return jsonify({'image_gan': base64_image_gan, 'image_bank': base64_image_bank, 'image_mix': base64_image_mix,
-                    'text_gan': str(round(gen_time_gan, 3)), 'text_bank': str(round(gen_time_bank, 3)),
+    return jsonify({'image_gan': base64_image_gan, 'image_mix': base64_image_mix,
+                    'text_gan': str(round(gen_time_gan, 3)),
                     'text_mix': str(round(gen_time_mix, 3))})
-
-
-@app.route('/stylebank', methods=['GET'])
-def stylebank():
-    # modify the upload template accordingly if you need to add new transform method
-    return render_template('stylebank.html')
 
 
 @app.route('/gated', methods=['GET'])
@@ -160,4 +130,4 @@ def tryall():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug = True)

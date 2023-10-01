@@ -34,26 +34,14 @@ def tensor2image(tensor):
 
 def generate_image_styleMixer(style_file, content_file):
     start = time.time()
-    name = "styleMixer_bw1_style3.00_cont3.00_iden1.00_cx3.00_1"
-    bandwidth = 1
-    iter = 8
-    mw = './styleMixer/checkpoint/'
-    c = 6
-    loc_weight = 3
-    alpha = 1
-
-    setting = name.split('_')
-    if setting[2][:2]=='bw':
-        bandwidth = setting[1][-1]
-    mw += "%s/iter_%d0000.pth.tar" % (name, iter)
 
 
-    #device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    device = torch.device("cpu")
+
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
     network = net.Net(vgg = 'styleMixer/checkpoint/vgg_normalised.pth')
-    network.load_state_dict(torch.load(mw, map_location=torch.device('cpu')))
+    network.load_state_dict(torch.load("styleMixer/checkpoint/iter_80000.pth.tar", map_location=torch.device('cpu')))
     network.eval()
     network.to(device)
 
@@ -61,8 +49,6 @@ def generate_image_styleMixer(style_file, content_file):
     style_tf = test_transform()
 
     max_dimension = 800
-    # avg = 5 s; max_dim = 900 --> avg=8
-
 
     styles = style_tf(Image.open(style_file).convert('RGB'))
     width = styles.shape[1]
@@ -78,11 +64,8 @@ def generate_image_styleMixer(style_file, content_file):
         toResize = transforms.Resize([new_width, new_height], transforms.InterpolationMode.BICUBIC)
         styles = toResize(styles)
 
-
-    #styles = [style.unsqueeze(0) for style in styles]
     styles = styles.to(device).unsqueeze(0)
     styles = styles.to(device).unsqueeze(0)
-    #print("styles", styles[0].size())
 
     content = content_tf(Image.open(content_file).convert('RGB'))
 
@@ -99,19 +82,11 @@ def generate_image_styleMixer(style_file, content_file):
         toResize = transforms.Resize([new_width, new_height], transforms.InterpolationMode.BICUBIC)
         content = toResize(content)
 
-    print(styles.shape, content.shape)
-
-    #print("content", content.size())
     content = content.to(device).unsqueeze(0)       
-
-    # print("styles", styles[0].size())
-    # print("content", content.size())
     
     with torch.no_grad():
         output = style_transfer(network=network, content=content, style=styles, device=device)
     
-    # output = tensor2image(output.data)
-    # output = Image.fromarray(output)
     grid = make_grid(output)
     ndarr = grid.mul(255).add_(0.5).clamp_(0, 255).permute(1, 2, 0).to("cpu", torch.uint8).numpy()
     im = Image.fromarray(ndarr)

@@ -144,10 +144,10 @@
 
         img {
             max-width: 100%;
-            {#max-height:100%;#}
+            max-height:100%;
             object-fit: contain;
-            {#height:auto;#}
-            {#margin-top: 20px;#}
+            height:auto;
+            margin-top: 20px;
 
         }
 
@@ -155,7 +155,7 @@
             font-style: italic;
             font-size: 12px;
             text-align: center;
-            {#margin-top: 5px;#}
+            margin-top: 5px;
         }
 
         .loader {
@@ -186,7 +186,6 @@
 
     <div>
         <a href="/gated" style="text-decoration: none;">Gated Gan</a>
-        <a href="/stylebank" style="text-decoration: none;">Style Bank</a>
         <a href="/stylemixer" style="text-decoration: none;">Style Mixer</a>
     </div>
 </nav>
@@ -229,9 +228,6 @@
         <div id="result"><img id="transformed-image-2" alt="Transformed Image" class="samesize">
             <figcaption id="image-caption-2"></figcaption>
         </div>
-        <div id="result"><img id="transformed-image-3" alt="Transformed Image" class="samesize">
-            <figcaption id="image-caption-3"></figcaption>
-        </div>
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -253,10 +249,10 @@
             document.getElementById('uploaded-content').style.display = 'none';
                     document.getElementById('transformed-image-1').style.display = 'none';
                     document.getElementById('transformed-image-2').style.display = 'none';
-                    document.getElementById('transformed-image-3').style.display = 'none';
+                   
                     document.getElementById('image-caption-1').style.display = 'none';
                     document.getElementById('image-caption-2').style.display = 'none';
-                    document.getElementById('image-caption-3').style.display = 'none';
+                   
                     document.getElementById('image-caption').style.display = 'none';
             document.querySelector('.loader').style.display = "block";
             var formData = new FormData(this);
@@ -294,14 +290,8 @@
                         });
                     });
 
-                    var promise3 = new Promise(function (resolve, reject) {
-                        $('#transformed-image-3').on('load', function () {
-                            resolve();
-                        });
-                    });
 
-
-                    Promise.all([promise, promise1, promise2, promise3]).then(function () {
+                    Promise.all([promise, promise1, promise2]).then(function () {
                         var images = document.getElementsByClassName('samesize');
                         var minWidth = 800;
                         var aspectR = 1;
@@ -325,17 +315,16 @@
 
                     $('#transformed-image-1').attr('src', 'data:image/png;base64,' + data.image_gan);
                     $('#image-caption-1').text("Generation Time for Gated GAN: " + data.text_gan + "s");
-                    $('#transformed-image-2').attr('src', 'data:image/png;base64,' + data.image_bank);
-                    $('#image-caption-2').text("Generation Time for Style Bank: " + data.text_bank + "s");
-                    $('#transformed-image-3').attr('src', 'data:image/png;base64,' + data.image_mix);
-                    $('#image-caption-3').text("Generation Time for Style Mixer: " + data.text_mix + "s");
+                    $('#transformed-image-2').attr('src', 'data:image/png;base64,' + data.image_mix);
+                    $('#image-caption-2').text("Generation Time for Style Mixer: " + data.text_mix + "s");
+
                     document.getElementById('uploaded-content').style.display = 'block';
                     document.getElementById('transformed-image-1').style.display = 'block';
                     document.getElementById('transformed-image-2').style.display = 'block';
-                    document.getElementById('transformed-image-3').style.display = 'block';
+                   
                     document.getElementById('image-caption-1').style.display = 'block';
                     document.getElementById('image-caption-2').style.display = 'block';
-                    document.getElementById('image-caption-3').style.display = 'block';
+                   
                     document.getElementById('image-caption').style.display = 'block';
                     document.querySelector('.loader').style.display = "none";
 
