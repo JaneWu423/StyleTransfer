@@ -5,15 +5,12 @@ from gatedGan.models import *
 from gatedGan.data import *
 import time
 
-# ##### Initialize Generator
+# Initialize Generator
 gen = Generator(3, 3, 3, 64)
 gen.load_state_dict(torch.load('./gatedGan/netG1000.pth', map_location='cpu'))
 
-# ###### Define Image Transforms
+# Define Image Transforms
 transforms_ = [
-    # transforms.Resize(int(300), transforms.InterpolationMode.BICUBIC),
-    # transforms.RandomCrop(256),
-    #         transforms.RandomVerticalFlip(p=0),
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ]
@@ -44,7 +41,6 @@ def generate_image(style, file, w=-1, h=-1, flip90=False):
             content = toResize(content)
 
     max_dimension = 800
-    # avg = 5 s; max_dim = 900 --> avg=8
 
     width = content.shape[1]
     height = content.shape[2]
@@ -85,4 +81,3 @@ def generate_image(style, file, w=-1, h=-1, flip90=False):
     end = time.time() - start
 
     return im, end, orig
-
