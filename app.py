@@ -55,15 +55,15 @@ def randStyle(style):
     folder_path = ""
     file_names = ""
     if style == 0:
-        folder_path = "./styleImg/ae"
+        folder_path = "./static/styleImg/ae"
         file_names = os.listdir(folder_path)
 
     elif style == 1:
-        folder_path = "./styleImg/re"
+        folder_path = "./static/styleImg/re"
         file_names = os.listdir(folder_path)
 
     else:
-        folder_path = "./styleImg/uki"
+        folder_path = "./static/styleImg/uki"
         file_names = os.listdir(folder_path)
 
     random_file_name = random.choice(file_names)
@@ -130,4 +130,4 @@ def tryall():
 
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run(debug="True")
